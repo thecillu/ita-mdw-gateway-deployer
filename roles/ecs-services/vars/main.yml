@@ -1,0 +1,2 @@
+#taskdefinition: "{{  microservice }}:{{ lookup('vars', microservice + '_container_port') }}"
+#taskdefinition_revision: "{{ lookup('vars', microservice + '_taskdefinition_revision') }}"

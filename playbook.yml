@@ -1,0 +1,7 @@
+- name: Deploy ECS task definition and service
+  hosts: localhost
+
+  roles:
+    - {role: ecs-services, microservices: [ "{{ microservice }}" ] }
+  vars_files:
+    - environments/{{env}}.yml

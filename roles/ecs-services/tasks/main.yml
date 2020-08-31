@@ -1,0 +1,11 @@
+- name: Deploy Role for microservices {{ microservices }}
+  include: deploy.yml microservice="{{ item }}"
+  with_items: "{{ microservices }}"
+  tags:
+    - deploy
+
+- name: Undeploy Role for microservices {{ microservices }}
+  include: undeploy.yml microservice="{{ item }}"
+  with_items: "{{ microservices }}"
+  tags:
+    - undeploy

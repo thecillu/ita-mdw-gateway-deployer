@@ -1,0 +1,46 @@
+# Basic listing example
+- ecs_service_info:
+    cluster: "{{ ecs_cluster }}"
+    service: "{{ microservice }}"
+    details: true
+  register: deployed_services
+  tags:
+    - undeploy
+
+- debug:
+    var: deployed_services.services[0].deployments[0].taskDefinition
+    #verbosity: 2
+  tags:
+    - undeploy
+
+- name: Set desired_count to 0 for ECS Service for {{ microservice }}
+  ecs_service:
+    state: present
+    name: "{{ microservice }}"
+    cluster: "{{ ecs_cluster }}"
+    launch_type: FARGATE
+    health_check_grace_period_seconds: 300
+    network_configuration:
+      assign_public_ip: no
+      subnets:
+        - "{{ ecs_service_private_subnet_AZ1 }}"
+        - "{{ ecs_service_private_subnet_AZ2 }}"
+      security_groups:
+        - "{{ ecs_service_security_group }}"
+    load_balancers:
+      - targetGroupArn: "{{ lookup('vars', microservice + '_alb_target_group_arn') }}"
+        containerName: "{{ microservice }}"
+        containerPort: "{{ lookup('vars', microservice + '_container_port') }}"
+    task_definition:  "{{deployed_services.services[0].deployments[0].taskDefinition }}"
+    desired_count: 0
+  register: ecs_service_output
+  tags:
+    - undeploy
+
+- name: Undeploy Microservice {{ microservice }}
+  ecs_service:
+    name: "{{ microservice }}"
+    state: absent
+    cluster: "{{ ecs_cluster }}"
+  tags:
+    - undeploy

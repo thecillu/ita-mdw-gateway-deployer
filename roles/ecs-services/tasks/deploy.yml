@@ -1,0 +1,56 @@
+- name: Create Task definition for {{ microservice }}
+  ecs_taskdefinition:
+    family: "{{ microservice }}"
+    state: present
+    task_role_arn: "{{ task_role_arn }}"
+    execution_role_arn: "{{ execution_role_arn }}"
+    network_mode: awsvpc
+    launch_type: FARGATE
+    cpu: "{{ lookup('vars', microservice + '_container_cpu') }}"
+    memory: "{{ lookup('vars', microservice + '_container_memory') }}"
+    #revision: "{{ lookup('vars', microservice + '_taskdefinition_revision') }}"
+    containers:
+      - name: "{{ microservice }}"
+        essential: true
+        image: "{{ lookup('vars', microservice + '_container_image') }}:{{ lookup('vars', microservice + '_container_image_version') }}"
+        #environment:
+        #- name: "CONTAINER_NAME"
+        #  value: "{{ microservice }}"
+        #- name: "SERVER_PORT"
+        #  value: "{{ lookup('vars', microservice + '_container_port') }}"
+        portMappings:
+        - containerPort: "{{ lookup('vars', microservice + '_container_port') }}"
+          hostPort: "{{ lookup('vars', microservice + '_container_port') }}"
+        logConfiguration:
+          logDriver: awslogs
+          options:
+            awslogs-group: "{{ ecs_log_group_name }}"
+            awslogs-stream-prefix: ecs
+            awslogs-region: "{{ aws_region }}"
+  register: task_output
+  tags:
+    - deploy
+
+- name: Deploy ECS Service for {{ microservice }}
+  ecs_service:
+    state: present
+    name: "{{ microservice }}"
+    cluster: "{{ ecs_cluster }}"
+    launch_type: FARGATE
+    health_check_grace_period_seconds: 300
+    network_configuration:
+      assign_public_ip: no
+      subnets:
+        - "{{ ecs_service_private_subnet_AZ1 }}"
+        - "{{ ecs_service_private_subnet_AZ2 }}"
+      security_groups:
+        - "{{ ecs_service_security_group }}"
+    load_balancers:
+      - targetGroupArn: "{{ lookup('vars', microservice + '_alb_target_group_arn') }}"
+        containerName: "{{ microservice }}"
+        containerPort: "{{ lookup('vars', microservice + '_container_port') }}"
+    task_definition: "{{  task_output.taskdefinition[\"family\"]   }}:{{ task_output.taskdefinition[\"revision\"] }}"
+    desired_count: "{{ lookup('vars', microservice + '_container_desired_count') }}"
+  register: ecs_service_output
+  tags:
+    - deploy
