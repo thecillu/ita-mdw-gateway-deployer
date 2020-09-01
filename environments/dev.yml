@@ -7,7 +7,7 @@ task_role_arn: arn:aws:iam::136026480493:role/mdwgateway_ecs_task_role
 ecs_log_group_name: /ecs/mdw-gateway_log_group
 ecs_service_private_subnet_AZ1: subnet-02ddbde530cbc3851
 ecs_service_private_subnet_AZ2: subnet-0bdc5695d8289ab43
-ecs_service_security_group: sg-0d9adb8ee3742b22b
+ecs_service_security_group: sg-0f0b6df8a4e48ebda
 
 # CONSISTENCY SERVICE
 consistency_container_image: 136026480493.dkr.ecr.eu-west-1.amazonaws.com/ita-mdw-gateway-consistency
