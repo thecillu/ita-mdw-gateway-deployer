@@ -1,0 +1,28 @@
+# COMMON
+aws_region: eu-west-1
+ecs_cluster: mdw-gateway
+network_mode: awsvpc
+execution_role_arn: arn:aws:iam::136026480493:role/mdwgateway_ecs_execution_role
+task_role_arn: arn:aws:iam::136026480493:role/mdwgateway_ecs_task_role
+ecs_log_group_name: /ecs/mdw-gateway_log_group
+ecs_service_private_subnet_AZ1: subnet-02ddbde530cbc3851
+ecs_service_private_subnet_AZ2: subnet-0bdc5695d8289ab43
+ecs_service_security_group: sg-0f0b6df8a4e48ebda
+
+# CONSISTENCY SERVICE
+consistency_container_image: 136026480493.dkr.ecr.eu-west-1.amazonaws.com/ita-mdw-gateway-consistency
+consistency_container_image_version: 0.0.1.36
+consistency_container_port: 8080
+consistency_container_memory: 512
+consistency_container_cpu: 256
+consistency_container_desired_count: 1
+consistency_alb_target_group_arn: arn:aws:elasticloadbalancing:eu-west-1:136026480493:targetgroup/consistency-tg/cd978e7e179ec971
+
+# CART SERVICE
+cart_container_image: 136026480493.dkr.ecr.eu-west-1.amazonaws.com/ita-mdw-gateway-cart
+cart_container_image_version: 0.0.1.22
+cart_container_port: 8090
+cart_container_memory: 512
+cart_container_cpu: 256
+cart_desired_count: 1
+cart_alb_target_group_arn: arn:aws:elasticloadbalancing:eu-west-1:136026480493:targetgroup/cart-tg/dc51457384577fd6
