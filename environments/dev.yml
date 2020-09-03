@@ -9,16 +9,26 @@ ecs_service_private_subnet_AZ1: subnet-02ddbde530cbc3851
 ecs_service_private_subnet_AZ2: subnet-0bdc5695d8289ab43
 ecs_service_security_group: sg-0f0b6df8a4e48ebda
 
-# CONSISTENCY SERVICE
+## CONSISTENCY SERVICE
 consistency_container_image: 136026480493.dkr.ecr.eu-west-1.amazonaws.com/ita-mdw-gateway-consistency
-consistency_container_image_version: 0.0.1.36
+consistency_container_image_version: 0.0.1.37
 consistency_container_port: 8080
 consistency_container_memory: 512
 consistency_container_cpu: 256
 consistency_container_desired_count: 1
 consistency_alb_target_group_arn: arn:aws:elasticloadbalancing:eu-west-1:136026480493:targetgroup/consistency-tg/cd978e7e179ec971
+# spring variables - EXAMPLES
+#consistency_saleforce_endpoint: https://www.google.com
+#consistency_saleforce_username: pippo
+#consistency_saleforce_password: !vault |
+#  $ANSIBLE_VAULT;1.1;AES256
+#  63343537326666323361353837333062356536363733316130316664333531663334383838373332
+#  6637623365363234613139323961646532653237363166320a313661376262653461383565396661
+#  37303666653536643535613734363031373664313834623532366435313937613061363030356166
+#  3934623366643939630a313933373430663538353332316339353961343633613632363735633334
+#  356
 
-# CART SERVICE
+## CART SERVICE
 cart_container_image: 136026480493.dkr.ecr.eu-west-1.amazonaws.com/ita-mdw-gateway-cart
 cart_container_image_version: 0.0.1.22
 cart_container_port: 8090
